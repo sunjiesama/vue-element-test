@@ -20,4 +20,16 @@ Mock.mock("/test/login", {
     "menus|1": [/[0-4]{1,5}/]
   }
 });
+Mock.mock("/test/getUser", {
+  code: 200,
+  result: true,
+  "userName|1-30": [
+    //姓名
+    Random.first()
+    //性别 1-male 2-female
+    /*   Mock.mock({
+      "gender|1-2": true
+    }) */
+  ]
+});
 export default Mock;

@@ -31,7 +31,7 @@
 </template>
 <script>
 import { userLogin } from "@/api/user";
-import "../../assets/js/line";
+import "@/assets/js/line";
 export default {
   data() {
     var validateUserName = (rule, value, callback) => {
@@ -63,12 +63,24 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
+          const loading = this.$loading({
+            lock: true,
+            text: "Loading",
+            spinner: "el-icon-loading",
+            background: "rgba(0, 0, 0, 0.7)"
+          });
           userLogin(this.ruleForm)
             .then(res => {
               if (res.data.code === 200 && res.data.result) {
                 this.$store.commit("INCREMENT", res.data.userInfo);
                 localStorage.setItem("userName", this.ruleForm.userName);
                 document.cookie = "Token=ASADS8D5S4S7S95EE4";
+                loading.close();
+                this.$notify({
+                  title: "登录成功",
+                  message: "欢迎(●ˇ∀ˇ●)",
+                  type: "success"
+                });
                 this.$router.push("/home");
               }
             })

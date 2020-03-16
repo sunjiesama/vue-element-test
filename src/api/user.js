@@ -6,3 +6,8 @@ export const userLogin = data =>
     method: "post",
     data
   });
+export const getUserList = () =>
+  axios({
+    url: "/test/getUser",
+    method: "get"
+  });

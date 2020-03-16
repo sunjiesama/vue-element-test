@@ -7,9 +7,19 @@
 </template>
 
 <script>
+import { getUserList } from "@/api/user";
 export default {
   data() {
     return {};
+  },
+  created() {
+    getUserList()
+      .then(res => {
+        console.log(res);
+      })
+      .catch(err => {
+        console.log(err);
+      });
   }
 };
 </script>
