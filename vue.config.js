@@ -1,4 +1,4 @@
-module.exports = {
+/* module.exports = {
   lintOnSave: true,
   // lineOnSave: false,
   devServer: {
@@ -14,3 +14,4 @@ module.exports = {
     }
   }
 };
+ */

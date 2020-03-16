@@ -8,6 +8,7 @@
     </el-col>
     <el-col :span="4">
       <div class="grid-content bg-purple">
+        <el-link type="info">{{ userName }}</el-link>
         <div class="usercontrol">
           <el-dropdown @command="handleCommand">
             <el-avatar src="" class="useravatar"></el-avatar>
@@ -48,10 +49,10 @@
   </el-row>
 </template>
 <script>
+import { mapState } from "vuex";
 export default {
   data() {
     return {
-      username: "皎月",
       dialogFormVisible: false,
       form: {
         name: "",
@@ -64,6 +65,9 @@ export default {
         desc: ""
       }
     };
+  },
+  computed: {
+    ...mapState({ userName: state => state.userName })
   },
   methods: {
     exit() {
@@ -78,6 +82,7 @@ export default {
 
       switch (command) {
         case "personalCenter":
+          this.personalCenter();
           break;
         case "changePassword":
           this.dialogFormVisible = !this.dialogFormVisible;

@@ -1,12 +1,12 @@
 <template>
-  <div>
+  <div class="loginBox">
     <el-form
       :model="ruleForm"
       status-icon
       :rules="rules"
       ref="ruleForm"
       label-width="100px"
-      class="demo-ruleForm"
+      class="loginForm"
     >
       <el-form-item :label="$t('login.userInfo.username')" prop="userName">
         <el-input v-model="ruleForm.userName" autocomplete="off"></el-input>
@@ -30,7 +30,8 @@
   </div>
 </template>
 <script>
-import { login } from "@api/user";
+import { userLogin } from "@/api/user";
+import "../../assets/js/line";
 export default {
   data() {
     var validateUserName = (rule, value, callback) => {
@@ -62,16 +63,18 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          login(this.ruleForm)
+          userLogin(this.ruleForm)
             .then(res => {
-              console.log(res);
+              if (res.data.code === 200 && res.data.result) {
+                this.$store.commit("INCREMENT", res.data.userInfo);
+                localStorage.setItem("userName", this.ruleForm.userName);
+                document.cookie = "Token=ASADS8D5S4S7S95EE4";
+                this.$router.push("/home");
+              }
             })
             .catch(err => {
               console.log(err);
             });
-          localStorage.setItem("userName", this.ruleForm.userName);
-          /* document.cookie = "Token=ASADS8D5S4S7S95EE4";
-          this.$router.push("/home"); */
         } else {
           console.log("error submit!!");
           return false;
@@ -84,3 +87,14 @@ export default {
   }
 };
 </script>
+<style lang="less" scoped>
+.loginBox {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .loginForm {
+    width: 400px;
+  }
+}
+</style>

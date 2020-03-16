@@ -4,6 +4,7 @@ import router from "./router";
 import store from "./store/index";
 import elementUI from "element-ui";
 import i18n from "./i18n/index";
+import "./mock/index";
 import "element-ui/lib/theme-chalk/index.css";
 import "../public/style/public.css";
 

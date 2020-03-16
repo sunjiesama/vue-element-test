@@ -1,8 +1,8 @@
-import Axios from "axios";
+import axios from "axios";
 
-export const login = data =>
-  Axios({
-    url: "test/login",
+export const userLogin = data =>
+  axios({
+    url: "/test/login",
     method: "post",
     data
   });

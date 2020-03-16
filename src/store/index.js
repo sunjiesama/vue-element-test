@@ -9,7 +9,8 @@ Vue.use(Vuex);
 
 const store = new Vuex.Store({
   state: {
-    count: 666666
+    count: 666666,
+    userName: ""
   },
   getters: {
     increase: state => {
@@ -20,11 +21,16 @@ const store = new Vuex.Store({
     }
   },
   mutations: {
-    INCREMENT(state) {
+    INCREMENT(state, n) {
       state.count++;
+      console.log(n);
+      state.userName = n.userName;
     },
     DECREMENT(state, n) {
       state.count -= n;
+    },
+    SETNAME(state, payload) {
+      console.log(payload);
     }
   },
   actions: {

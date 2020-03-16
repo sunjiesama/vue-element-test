@@ -111,7 +111,6 @@ export default {
   },
   computed: {
     ...mapState({ num: state => state.count }),
-    /*  这里的num是个参数，这个参数的名字要严格与state里面对象名的相等*/
     ...mapState(["count"]),
     ...mapGetters(["increase", "decrease"])
   }
