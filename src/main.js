@@ -25,6 +25,7 @@ router.beforeEach((to, from, next) => {
   NProgress.start();
   let token = document.cookie;
   if (token) {
+    console.log("token存在", token);
     NProgress.done();
     next();
   } else {
@@ -34,6 +35,7 @@ router.beforeEach((to, from, next) => {
         path: "/login"
       });
     } else {
+      console.log("token不存在");
       NProgress.done();
       next();
     }
