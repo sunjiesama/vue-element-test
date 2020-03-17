@@ -12,20 +12,10 @@ import "element-ui/lib/theme-chalk/index.css";
 import "../public/style/public.css";
 
 Vue.config.productionTip = false;
-
-Vue.use(elementUI);
-new Vue({
-  router,
-  store,
-  elementUI,
-  i18n,
-  render: h => h(App)
-}).$mount("#app");
 router.beforeEach((to, from, next) => {
   NProgress.start();
   let token = document.cookie;
   if (token) {
-    console.log("token存在", token);
     NProgress.done();
     next();
   } else {
@@ -35,7 +25,6 @@ router.beforeEach((to, from, next) => {
         path: "/login"
       });
     } else {
-      console.log("token不存在");
       NProgress.done();
       next();
     }
@@ -53,3 +42,11 @@ axios.interceptors.response.use(function(config) {
   }
   return config;
 });
+
+Vue.use(elementUI);
+new Vue({
+  router,
+  store,
+  i18n,
+  render: h => h(App)
+}).$mount("#app");

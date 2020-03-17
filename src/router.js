@@ -38,7 +38,8 @@ export default new Router({
           component: () => import("@/views/home/Home")
         }
       ],
-      isHidden: false
+      isHidden: false,
+      serialNumber: 1
     },
     {
       path: "/time",
@@ -53,7 +54,8 @@ export default new Router({
           component: () => import("@/views/home/Time")
         }
       ],
-      isHidden: false
+      isHidden: false,
+      serialNumber: 2
     },
     {
       path: "/article",
@@ -61,14 +63,15 @@ export default new Router({
       component: Index,
       redirect: "article/index",
       title: "文章",
-      icon: "el-icon-document",
+      icon: "el-icon-reading",
       children: [
         {
           path: "index",
           component: () => import("@/views/home/Article")
         }
       ],
-      isHidden: false
+      isHidden: false,
+      serialNumber: 3
     },
     {
       path: "/excel",
@@ -83,7 +86,56 @@ export default new Router({
           component: () => import("@/views/home/Excel")
         }
       ],
-      isHidden: false
+      isHidden: false,
+      serialNumber: 4
+    },
+    {
+      path: "/canvas",
+      name: "canvas",
+      component: Index,
+      redirect: "canvas/index",
+      title: "canvas",
+      icon: "el-icon-news",
+      children: [
+        {
+          path: "index",
+          component: () => import("@/views/home/Canvas")
+        }
+      ],
+      isHidden: false,
+      serialNumber: 5
+    },
+    {
+      path: "/icons",
+      name: "icons",
+      component: Index,
+      redirect: "icons/index",
+      title: "icons",
+      icon: "el-icon-umbrella",
+      children: [
+        {
+          path: "index",
+          component: () => import("@/views/home/Icons")
+        }
+      ],
+      isHidden: false,
+      serialNumber: 5
+    },
+    {
+      path: "/table",
+      name: "table",
+      component: Index,
+      redirect: "table/index",
+      title: "table",
+      icon: "el-icon-wind-power",
+      children: [
+        {
+          path: "index",
+          component: () => import("@/views/home/Table")
+        }
+      ],
+      isHidden: false,
+      serialNumber: 5
     }
   ]
 });
