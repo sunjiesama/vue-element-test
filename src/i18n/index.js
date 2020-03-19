@@ -8,7 +8,7 @@ import ja from "./config/ja-JP";
 import de from "./config/de-DE";
 
 const i18n = new VueI18n({
-  locale: localStorage.getItem("locale") || "ja",
+  locale: localStorage.getItem("locale") || "zh",
   messages: {
     zh,
     en,

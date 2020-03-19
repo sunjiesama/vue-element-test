@@ -4,8 +4,24 @@
     <el-button @click="clearFilter">清除所有过滤器</el-button>
     <el-table ref="filterTable" :data="tableData" style="width: 100%" stripe>
       <el-table-column
+        prop="userName"
+        label="姓名"
+        width="180"
+      ></el-table-column>
+      <el-table-column prop="gender" label="性别" width="100">
+        <template slot-scope="scope">
+          {{ scope.row.gender === "1" ? "男性" : "女性" }}
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="address"
+        label="地址"
+        :formatter="formatter"
+      ></el-table-column>
+      <el-table-column
         prop="date"
         label="日期"
+        border
         sortable
         width="180"
         column-key="date"
@@ -16,11 +32,8 @@
           { text: '2016-05-04', value: '2016-05-04' }
         ]"
         :filter-method="filterHandler"
-      >
-      </el-table-column>
-      <el-table-column prop="name" label="姓名" width="180"> </el-table-column>
-      <el-table-column prop="address" label="地址" :formatter="formatter">
-      </el-table-column>
+      ></el-table-column>
+
       <el-table-column
         prop="tag"
         label="标签"
@@ -40,7 +53,7 @@
           >
         </template>
       </el-table-column>
-      <el-table-column label="操作">
+      <el-table-column label="操作" width="180">
         <template slot-scope="scope">
           <el-button size="mini" @click="handleEdit(scope.$index, scope.row)"
             >编辑</el-button
@@ -54,50 +67,146 @@
         </template>
       </el-table-column>
     </el-table>
+    <!-- 编辑表单 -->
+    <el-dialog title="编辑用户信息" :visible.sync="dialogFormVisible">
+      <el-form
+        :model="ruleForm"
+        :rules="rules"
+        ref="ruleForm"
+        label-width="100px"
+        class="demo-ruleForm"
+        size="mini"
+      >
+        <el-form-item label="姓名" prop="name">
+          <el-input v-model="ruleForm.userName"></el-input>
+        </el-form-item>
+        <el-form-item label="地址" prop="region">
+          <v-distpicker
+            @selected="onSelected"
+            class="regionSelect"
+          ></v-distpicker>
+        </el-form-item>
+        <el-form-item label="日期" required>
+          <el-col :span="11">
+            <el-form-item prop="date1">
+              <el-date-picker
+                disabled
+                type="date"
+                placeholder="选择日期"
+                v-model="ruleForm.date1"
+                style="width: 100%;"
+              ></el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col class="line" :span="2">-</el-col>
+          <el-col :span="11">
+            <el-form-item prop="date2">
+              <el-time-picker
+                disabled
+                placeholder="选择时间"
+                v-model="ruleForm.date2"
+                style="width: 100%;"
+              ></el-time-picker>
+            </el-form-item>
+          </el-col>
+        </el-form-item>
+        <el-form-item label="性别" prop="gender">
+          <el-radio-group v-model="ruleForm.gender">
+            <el-radio label="1"></el-radio>
+            <el-radio label="0"></el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="个人简介" prop="desc">
+          <el-input type="textarea" v-model="ruleForm.desc"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="resetForm('ruleForm')">取 消</el-button>
+        <el-button type="primary" @click="submitForm('ruleForm')"
+          >确 定</el-button
+        >
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import VDistpicker from "v-distpicker";
+import { getUserList, deleteUser } from "@/api/user";
 export default {
+  components: { VDistpicker },
   data() {
     return {
-      tableData: [
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄",
-          tag: "家"
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1517 弄",
-          tag: "公司"
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1519 弄",
-          tag: "家"
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄",
-          tag: "公司"
-        }
-      ]
+      tableData: [],
+      dialogFormVisible: false,
+      ruleForm: {},
+      rules: {
+        name: [
+          { required: true, message: "请输入姓名", trigger: "blur" },
+          { min: 3, max: 5, message: "长度在 3 到 5 个字符", trigger: "blur" }
+        ],
+        region: [{ required: true, message: "请输入地址", trigger: "change" }],
+        date1: [
+          {
+            type: "date",
+            required: true,
+            message: "请选择日期",
+            trigger: "change"
+          }
+        ],
+        date2: [
+          {
+            type: "date",
+            required: true,
+            message: "请选择时间",
+            trigger: "change"
+          }
+        ],
+        gender: [{ required: true, message: "请选择性别", trigger: "change" }],
+        desc: [{ required: true, message: "请填写个人简介", trigger: "blur" }]
+      },
+      formLabelWidth: "120px"
     };
   },
+  created() {
+    getUserList()
+      .then(res => {
+        console.log(res);
+        if (res.data.code === 200) {
+          this.tableData = res.data.data;
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  },
   methods: {
+    onSelected(data) {
+      console.log(data);
+    },
+    submitForm(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          this.dialogFormVisible = false;
+          alert("submit!");
+        } else {
+          this.dialogFormVisible = false;
+          console.log("error submit!!");
+          return false;
+        }
+      });
+    },
+    resetForm(formName) {
+      this.dialogFormVisible = false;
+      this.$refs[formName].resetFields();
+    },
     resetDateFilter() {
       this.$refs.filterTable.clearFilter("date");
     },
     clearFilter() {
       this.$refs.filterTable.clearFilter();
     },
-    formatter(row, column) {
-      console.log(column);
+    formatter(row /* column */) {
       return row.address;
     },
     filterTag(value, row) {
@@ -109,10 +218,34 @@ export default {
     },
     handleEdit(index, row) {
       console.log(index, row);
+      this.ruleForm = row;
+      this.dialogFormVisible = true;
     },
     handleDelete(index, row) {
-      console.log(index, row);
+      deleteUser({ id: row.user_id })
+        .then(res => {
+          if (res.data.code === 200) {
+            this.$message({
+              message: "成功",
+              type: "success"
+            });
+          }
+          this.tableData.splice(index, 1);
+        })
+        .catch(err => {
+          console.log(err);
+        });
     }
   }
 };
 </script>
+<style lang="less">
+.regionSelect {
+  select {
+    padding: 0 5px;
+    height: 28px;
+    color: #606266;
+    font-size: 12px;
+  }
+}
+</style>

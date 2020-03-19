@@ -11,7 +11,8 @@
 </template>
 
 <script>
-import { getUserList } from "@/api/user";
+
+
 export default {
   data() {
     return {
@@ -19,19 +20,10 @@ export default {
     };
   },
   created() {
-    /* if (!document.cookie) {
-      this.$router.push("/login");
-    } */
     setTimeout(() => {
       this.show = true;
     }, 300);
-    getUserList()
-      .then(res => {
-        console.log(res, "第一次获取数据");
-      })
-      .catch(err => {
-        console.log(err);
-      });
+
   }
 };
 </script>
