@@ -1,11 +1,12 @@
 <template>
   <el-menu
-    default-active="/home"
+    :default-active="defaultActive"
     class="el-menu-vertical-demo"
     @open="handleOpen"
     @close="handleClose"
     :collapse="isCollapse"
     :router="true"
+    @select="toPath"
   >
     <el-menu-item v-for="(item, index) in nav" :key="index" :index="item.path">
       <i :class="item.icon"></i>
@@ -58,9 +59,16 @@ export default {
       return routes.filter(function(item) {
         return item.isHidden !== true;
       });
+    },
+    defaultActive() {
+      return localStorage.getItem("defaultPath");
     }
   },
   methods: {
+    toPath(key) {
+      console.log(key);
+      localStorage.setItem("defaultPath", key);
+    },
     handleOpen(key, keyPath) {
       console.log(key, keyPath);
     },

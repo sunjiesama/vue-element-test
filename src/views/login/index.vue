@@ -122,7 +122,6 @@ export default {
           });
           userLogin(this.ruleForm)
             .then(res => {
-              console.log(res);
               if (res.data.code === 200) {
                 this.$store.commit("INCREMENT", res.data.data.nickName);
                 localStorage.setItem("userName", res.data.data.nickName);
@@ -142,8 +141,12 @@ export default {
                 loading.close();
               }
             })
-            .catch(err => {
-              console.log(err);
+            .catch(() => {
+              this.$message({
+                message: "网络除了点问题=_=",
+                type: "warning"
+              });
+              loading.close();
             });
         } else {
           console.log("error submit!!");

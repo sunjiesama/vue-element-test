@@ -37,8 +37,6 @@ axios.interceptors.response.use(function(config) {
     //token失效，移除token
     document.cookie =
       "COOKIE_USER_TOKEN_CODE=; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-  } else {
-    console.log(config.data.code);
   }
   return config;
 });
