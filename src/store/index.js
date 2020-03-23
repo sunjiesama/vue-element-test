@@ -23,14 +23,14 @@ const store = new Vuex.Store({
   mutations: {
     INCREMENT(state, n) {
       state.count++;
-      console.log(n);
       state.userName = n.userName;
     },
     DECREMENT(state, n) {
       state.count -= n;
     },
-    SETNAME(state, payload) {
-      console.log(payload);
+    SETNAME() {},
+    LOGOUT(state) {
+      state.count++;
     }
   },
   actions: {
@@ -39,6 +39,9 @@ const store = new Vuex.Store({
     },
     INCREMENT(context) {
       context.commit("INCREMENT");
+    },
+    LOGOUT(context) {
+      context.commit("LOGOUT");
     }
   }
 });

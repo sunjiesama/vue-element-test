@@ -97,7 +97,7 @@ export default {
   },
   methods: {
     exit() {
-      localStorage.clear();
+      document.cookie = "Token=; expires=Thu, 01 Jan 1970 00:00:00 GMT";
       this.$router.push("/login");
     },
     personalCenter() {
@@ -105,8 +105,6 @@ export default {
       this.myInfoVisible = true;
     },
     handleCommand(command) {
-      console.log(command);
-
       switch (command) {
         case "personalCenter":
           this.personalCenter();

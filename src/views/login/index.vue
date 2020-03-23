@@ -18,6 +18,7 @@
           type="password"
           v-model="ruleForm.passWord"
           autocomplete="off"
+          @keydown.native.enter="submitForm('ruleForm')"
         ></el-input>
       </el-form-item>
       <el-form-item>
@@ -149,7 +150,6 @@ export default {
               loading.close();
             });
         } else {
-          console.log("error submit!!");
           return false;
         }
       });
@@ -185,7 +185,6 @@ export default {
               loading.close();
             });
         } else {
-          console.log("error submit!!");
           return false;
         }
       });

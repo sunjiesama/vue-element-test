@@ -66,7 +66,6 @@ export default {
   },
   methods: {
     toPath(key) {
-      console.log(key);
       localStorage.setItem("defaultPath", key);
     },
     handleOpen(key, keyPath) {

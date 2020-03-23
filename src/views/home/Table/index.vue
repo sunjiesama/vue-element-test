@@ -171,7 +171,6 @@ export default {
   created() {
     getUserList()
       .then(res => {
-        console.log(res);
         if (res.data.code === 200) {
           this.tableData = res.data.data;
         }
@@ -191,7 +190,6 @@ export default {
           alert("submit!");
         } else {
           this.dialogFormVisible = false;
-          console.log("error submit!!");
           return false;
         }
       });
@@ -217,7 +215,6 @@ export default {
       return row[property] === value;
     },
     handleEdit(index, row) {
-      console.log(index, row);
       this.ruleForm = row;
       this.dialogFormVisible = true;
     },
