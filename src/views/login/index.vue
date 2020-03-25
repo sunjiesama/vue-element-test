@@ -92,7 +92,6 @@ export default {
         callback();
       }
     };
-
     return {
       rules: {
         userName: [{ validator: validateUserName, trigger: "blur" }],
@@ -126,7 +125,7 @@ export default {
               if (res.data.code === 200) {
                 this.$store.commit("INCREMENT", res.data.data.nickName);
                 localStorage.setItem("userName", res.data.data.nickName);
-                document.cookie = "Token=ASADS8D5S4S7S95EE4";
+                localStorage.setItem("Token", "ASADS8D5S4S7S95EE4");
                 loading.close();
                 this.$notify({
                   title: "登录成功",

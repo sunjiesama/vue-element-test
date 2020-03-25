@@ -27,14 +27,29 @@
         <li v-for="(i, index) in list" :key="index" class="list-item">
           <div class="top">
             <!--  <img src="@/assets/img/Avatar.gif" alt="" class="headerIMG" /> -->
-            <span>{{ i.nickName }}</span>
+            <div class="articleTitle">{{ i.nickName }}</div>
+            <div class="rise">
+              <div>
+                <i class="el-icon-date articleDate">&#8194; {{ i.date }}</i>
+              </div>
+              <div class="articleLabel">
+                &#8194;
+                <template>
+                  <el-tag
+                    v-for="(i, index) in labelToArray(i.label)"
+                    :key="index"
+                    size="mini"
+                    >{{ i }}</el-tag
+                  >
+                </template>
+              </div>
+            </div>
           </div>
           <div class="body">
-            <span>{{ i.content }}</span>
+            <div class="articleContent">{{ i.content }}</div>
           </div>
           <div class="foot">
-            <span class="date">{{ i.date }}</span>
-            <span>{{ i.motto }}</span>
+            <span class="articleAuthor"> 作者：{{ i.author }} </span>
             <el-link
               :underline="false"
               @click="delMoments(i.id, index)"
@@ -61,7 +76,6 @@ export default {
       list: [],
       form: {
         type: "search",
-        id: 1, //删除测试用
         pageSize: 10,
         pageNum: 1
       },
@@ -78,13 +92,18 @@ export default {
   },
   computed: {
     noMore() {
-      return this.form.pageNum >= 5;
+      return this.form.pageNum >= 2;
     },
     disabled() {
       return this.loading || this.noMore;
     }
   },
   methods: {
+    //分割label为数组
+    labelToArray(a) {
+      let arr = a.split(",");
+      return arr;
+    },
     addmood() {
       moments(this.mootForm)
         .then(() => {
@@ -169,18 +188,32 @@ ul {
   li {
     box-sizing: border-box;
     padding: 30px 50px;
-    height: 200px;
+    height: 300px;
     list-style-type: none;
     display: flex;
     flex-direction: column;
     .top {
       display: flex;
-      align-items: center;
+      flex-direction: column;
       flex-grow: 0;
+      .articleTitle {
+        color: #455a64;
+        font: bold 20px "";
+        margin-bottom: 20px;
+      }
       .headerIMG {
         width: 50px;
         height: 50px;
         border-radius: 50%;
+      }
+      .rise {
+        display: flex;
+        .articleLabel > span {
+          margin: 0 5px;
+        }
+        .articleDate {
+          color: #bdbdbd;
+        }
       }
       span {
         /* margin-left: 20px; */
@@ -189,25 +222,32 @@ ul {
     }
     .body {
       flex-grow: 2;
-      text-indent: 2rem;
+
+      .articleContent {
+        padding: 5px 10px;
+        height: 100%;
+        text-indent: 2rem;
+        color: #424242;
+        font-size: 14px;
+        line-height: 40px;
+      }
     }
     .foot {
-      .date {
-        color: #ccc;
-        margin-right: 20px;
-      }
-      flex-grow: 1;
+      flex-grow: 0;
       .link_del {
         float: right;
         margin-right: 20px;
       }
+      .articleAuthor {
+        color: #ff5722;
+      }
     }
   }
   li:nth-of-type(odd) {
-    background: rgba(198, 215, 255, 0.52);
+    background: rgba(181, 211, 211, 0.52);
   }
   li:nth-of-type(even) {
-    background: rgba(230, 243, 243, 0.52);
+    background: rgba(166, 179, 179, 0.52);
   }
 }
 </style>

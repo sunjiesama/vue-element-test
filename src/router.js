@@ -136,6 +136,7 @@ export default new Router({
       ],
       isHidden: false,
       serialNumber: 5
-    }
+    },
+    { path: "*", component: () => import("@/views/404") }
   ]
 });

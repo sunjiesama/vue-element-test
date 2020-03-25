@@ -52,7 +52,6 @@ export default {
       isCollapse: true
     };
   },
-
   computed: {
     nav() {
       let routes = this.$router.options.routes;

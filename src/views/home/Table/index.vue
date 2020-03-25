@@ -1,142 +1,154 @@
 <template>
-  <div>
-    <el-button @click="resetDateFilter">清除日期过滤器</el-button>
-    <el-button @click="clearFilter">清除所有过滤器</el-button>
-    <el-table ref="filterTable" :data="tableData" style="width: 100%" stripe>
-      <el-table-column
-        prop="userName"
-        label="姓名"
-        width="180"
-      ></el-table-column>
-      <el-table-column prop="gender" label="性别" width="100">
-        <template slot-scope="scope">
-          {{ scope.row.gender === "1" ? "男性" : "女性" }}
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="address"
-        label="地址"
-        :formatter="formatter"
-      ></el-table-column>
-      <el-table-column
-        prop="date"
-        label="日期"
-        border
-        sortable
-        width="180"
-        column-key="date"
-        :filters="[
-          { text: '2016-05-01', value: '2016-05-01' },
-          { text: '2016-05-02', value: '2016-05-02' },
-          { text: '2016-05-03', value: '2016-05-03' },
-          { text: '2016-05-04', value: '2016-05-04' }
-        ]"
-        :filter-method="filterHandler"
-      ></el-table-column>
+  <transition name="el-zoom-in-top">
+    <div v-show="show" class="transition-box">
+      <el-button @click="resetDateFilter">清除日期过滤器</el-button>
+      <el-button @click="clearFilter">清除所有过滤器</el-button>
+      <el-table
+        ref="filterTable"
+        :data="tableData"
+        style="width: 100%"
+        stripe
+        @cell-dblclick="edit"
+      >
+        <el-table-column
+          prop="userName"
+          label="姓名"
+          width="180"
+        ></el-table-column>
+        <el-table-column prop="gender" label="性别" width="100">
+          <template slot-scope="scope">
+            {{ scope.row.gender === "1" ? "男性" : "女性" }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="address"
+          label="地址"
+          :formatter="formatter"
+        ></el-table-column>
+        <el-table-column
+          prop="date"
+          label="日期"
+          border
+          sortable
+          width="180"
+          column-key="date"
+          :filters="[
+            { text: '2016-05-01', value: '2016-05-01' },
+            { text: '2016-05-02', value: '2016-05-02' },
+            { text: '2016-05-03', value: '2016-05-03' },
+            { text: '2016-05-04', value: '2016-05-04' }
+          ]"
+          :filter-method="filterHandler"
+        ></el-table-column>
 
-      <el-table-column
-        prop="tag"
-        label="标签"
-        width="100"
-        :filters="[
-          { text: '家', value: '家' },
-          { text: '公司', value: '公司' }
-        ]"
-        :filter-method="filterTag"
-        filter-placement="bottom-end"
-      >
-        <template slot-scope="scope">
-          <el-tag
-            :type="scope.row.tag === '家' ? 'primary' : 'success'"
-            disable-transitions
-            >{{ scope.row.tag }}</el-tag
-          >
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" width="180">
-        <template slot-scope="scope">
-          <el-button size="mini" @click="handleEdit(scope.$index, scope.row)"
-            >编辑</el-button
-          >
-          <el-button
-            size="mini"
-            type="danger"
-            @click="handleDelete(scope.$index, scope.row)"
-            >删除</el-button
-          >
-        </template>
-      </el-table-column>
-    </el-table>
-    <!-- 编辑表单 -->
-    <el-dialog title="编辑用户信息" :visible.sync="dialogFormVisible">
-      <el-form
-        :model="ruleForm"
-        :rules="rules"
-        ref="ruleForm"
-        label-width="100px"
-        class="demo-ruleForm"
-        size="mini"
-      >
-        <el-form-item label="姓名" prop="name">
-          <el-input v-model="ruleForm.userName"></el-input>
-        </el-form-item>
-        <el-form-item label="地址" prop="region">
-          <v-distpicker
-            @selected="onSelected"
-            class="regionSelect"
-          ></v-distpicker>
-        </el-form-item>
-        <el-form-item label="日期" required>
-          <el-col :span="11">
-            <el-form-item prop="date1">
-              <el-date-picker
-                disabled
-                type="date"
-                placeholder="选择日期"
-                v-model="ruleForm.date1"
-                style="width: 100%;"
-              ></el-date-picker>
-            </el-form-item>
-          </el-col>
-          <el-col class="line" :span="2">-</el-col>
-          <el-col :span="11">
-            <el-form-item prop="date2">
-              <el-time-picker
-                disabled
-                placeholder="选择时间"
-                v-model="ruleForm.date2"
-                style="width: 100%;"
-              ></el-time-picker>
-            </el-form-item>
-          </el-col>
-        </el-form-item>
-        <el-form-item label="性别" prop="gender">
-          <el-radio-group v-model="ruleForm.gender">
-            <el-radio label="1"></el-radio>
-            <el-radio label="0"></el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="个人简介" prop="desc">
-          <el-input type="textarea" v-model="ruleForm.desc"></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="resetForm('ruleForm')">取 消</el-button>
-        <el-button type="primary" @click="submitForm('ruleForm')"
-          >确 定</el-button
+        <el-table-column
+          prop="tag"
+          label="标签"
+          width="100"
+          :filters="[
+            { text: '家', value: '家' },
+            { text: '公司', value: '公司' }
+          ]"
+          :filter-method="filterTag"
+          filter-placement="bottom-end"
         >
-      </div>
-    </el-dialog>
-  </div>
+          <template slot-scope="scope">
+            <el-tag
+              :type="scope.row.tag === '家' ? 'primary' : 'success'"
+              disable-transitions
+              >{{ scope.row.tag }}</el-tag
+            >
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="180">
+          <template slot-scope="scope">
+            <!-- <el-button size="mini" @click="handleEdit(scope.$index, scope.row)"
+              >编辑</el-button
+            > -->
+            <el-button
+              size="mini"
+              type="danger"
+              @click="handleDelete(scope.$index, scope.row)"
+              >删除</el-button
+            >
+          </template>
+        </el-table-column>
+      </el-table>
+      <!-- 编辑表单 -->
+      <el-dialog title="编辑用户信息" :visible.sync="dialogFormVisible">
+        <el-form
+          :model="ruleForm"
+          :rules="rules"
+          ref="ruleForm"
+          label-width="100px"
+          class="demo-ruleForm"
+          size="mini"
+        >
+          <el-form-item label="姓名" prop="name">
+            <el-input v-model="ruleForm.userName"></el-input>
+          </el-form-item>
+          <el-form-item label="地址" prop="region">
+            <v-distpicker
+              @selected="onSelected"
+              class="regionSelect"
+            ></v-distpicker>
+          </el-form-item>
+          <el-form-item label="日期" required>
+            <el-col :span="11">
+              <el-form-item prop="date1">
+                <el-date-picker
+                  disabled
+                  type="date"
+                  placeholder="选择日期"
+                  v-model="ruleForm.date1"
+                  style="width: 100%;"
+                ></el-date-picker>
+              </el-form-item>
+            </el-col>
+            <el-col class="line" :span="2">-</el-col>
+            <el-col :span="11">
+              <el-form-item prop="date2">
+                <el-time-picker
+                  disabled
+                  placeholder="选择时间"
+                  v-model="ruleForm.date2"
+                  style="width: 100%;"
+                ></el-time-picker>
+              </el-form-item>
+            </el-col>
+          </el-form-item>
+          <el-form-item label="性别" prop="gender">
+            <el-radio-group v-model="ruleForm.gender">
+              <el-radio label="1"></el-radio>
+              <el-radio label="0"></el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="个人简介" prop="desc">
+            <el-input type="textarea" v-model="ruleForm.desc"></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="resetForm('ruleForm')">取 消</el-button>
+          <el-button type="primary" @click="submitForm('ruleForm')"
+            >确 定</el-button
+          >
+        </div>
+      </el-dialog>
+    </div>
+  </transition>
 </template>
 
 <script>
 import VDistpicker from "v-distpicker";
-import { getUserList, deleteUser } from "@/api/user";
+import { getUserList, deleteUser, updateUser } from "@/api/user";
+
 export default {
   components: { VDistpicker },
+  inject: ["reload"],
   data() {
     return {
+      isEdit: false,
+      show: false,
       tableData: [],
       dialogFormVisible: false,
       ruleForm: {},
@@ -169,6 +181,9 @@ export default {
     };
   },
   created() {
+    setTimeout(() => {
+      this.show = true;
+    }, 500);
     getUserList()
       .then(res => {
         if (res.data.code === 200) {
@@ -180,6 +195,66 @@ export default {
       });
   },
   methods: {
+    edit(row, column, cell) {
+      console.log(cell);
+
+      let _this = this;
+      if (column.property === "userName" && !column.isEdit) {
+        column.isEdit = true;
+        let oldValue = cell.children[0].innerText;
+        console.log(oldValue);
+
+        cell.children[0].style.display = "none";
+        cell.innerHTML = `<input class=edit value='${oldValue}'></input>`;
+        let a = document.querySelector(".edit");
+        a.focus();
+        a.select();
+
+        a.onblur = function() {
+          if (!a.value || a.value === oldValue) {
+            cell.children[0].style.display = "none";
+            cell.innerHTML = `<div class=cell>${oldValue}</div>`;
+            column.isEdit = false;
+          } else {
+            let obj = {
+              user_id: row.user_id,
+              userName: a.value
+            };
+            _this
+              .$confirm("是否更新?", "提示", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "warning"
+              })
+              .then(() => {
+                updateUser(obj)
+                  .then(res => {
+                    console.log(res);
+                    if (res.data.code === 200) {
+                      _this.$message({
+                        type: "success",
+                        message: res.data.msg
+                      });
+                      _this.reload();
+                    }
+                  })
+                  .catch(err => {
+                    console.log(err);
+                  });
+              })
+              .catch(() => {
+                _this.$message({
+                  type: "info",
+                  message: "已取消"
+                });
+                cell.children[0].style.display = "none";
+                cell.innerHTML = `<div class=cell>${oldValue}</div>`;
+                column.isEdit = false;
+              });
+          }
+        };
+      }
+    },
     onSelected(data) {
       console.log(data);
     },
@@ -244,5 +319,9 @@ export default {
     color: #606266;
     font-size: 12px;
   }
+}
+.edit {
+  margin-left: 10px;
+  width: 80%;
 }
 </style>
