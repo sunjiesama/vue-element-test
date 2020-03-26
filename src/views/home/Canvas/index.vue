@@ -7,6 +7,7 @@
       style="border:1px solid #c3c3c3;"
     >
     </canvas>
+    <div id="Box"></div>
   </div>
 </template>
 
@@ -20,8 +21,18 @@ export default {
     ctx.moveTo(0, 0);
     ctx.lineTo(200, 100);
     ctx.stroke();
+
+    var winWidth =
+      document.body.clientWidth || document.documentElement.clientWidth;
+    let box = document.getElementById("Box");
+    box.style.width = winWidth * 0.8 + "px";
+    box.style.height = winWidth * 0.5 + "px";
   }
 };
 </script>
 
-<style></style>
+<style>
+#Box {
+  background: rgb(151, 197, 241);
+}
+</style>

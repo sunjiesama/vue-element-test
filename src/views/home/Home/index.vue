@@ -1,21 +1,28 @@
 <template>
   <div>
-    <!--    <el-carousel :interval="4000" type="card" height="200px">
-      <el-carousel-item v-for="item in 3" :key="item.title">
-        <h3 class="medium">{{ item }}</h3>
-      </el-carousel-item>
-    </el-carousel> -->
     <div class="moodBox">
-      <el-input
-        type="textarea"
-        :rows="2"
-        placeholder="请输入内容"
-        v-model="mootForm.content"
-        class="textarea"
-      >
-      </el-input>
       <div class="publish">
-        <el-button size="mini" @click="addmood">发表</el-button>
+        <el-input
+          type="textarea"
+          :rows="5"
+          placeholder="请输入内容"
+          v-model="mootForm.content"
+          class="textarea"
+        ></el-input>
+        <div class="moodBoxBottom">
+          <el-button size="mini" @click="addmood">发表</el-button>
+          <div class="EmojiBox" v-if="Emoji">
+            <img
+              v-for="emoji in emojiList"
+              :src="emojiPath(emoji.url)"
+              alt
+              :key="emoji.url"
+              class="emoji"
+              @click="chooseEmoji(emoji.meaning)"
+            />
+          </div>
+          <img src="@/assets/svg/emoji-1.png" alt @click="showEmoji('aaa')" />
+        </div>
       </div>
     </div>
     <div class="infinite-list-wrapper" style="overflow:true">
@@ -46,10 +53,15 @@
             </div>
           </div>
           <div class="body">
-            <div class="articleContent">{{ i.content }}</div>
+            <div class="articleContent">
+              {{ i.content
+              }}<el-link :underline="false" @click="readMore(i.id)"
+                >查看全文</el-link
+              >
+            </div>
           </div>
           <div class="foot">
-            <span class="articleAuthor"> 作者：{{ i.author }} </span>
+            <span class="articleAuthor">作者：{{ i.author }}</span>
             <el-link
               :underline="false"
               @click="delMoments(i.id, index)"
@@ -67,9 +79,12 @@
 
 <script>
 import { moments } from "@/api/user";
+import { emojiList } from "@/assets/svg/index.js";
 export default {
   data() {
     return {
+      emojiList,
+      Emoji: false,
       textarea: "",
       count: 0,
       loading: false,
@@ -99,6 +114,10 @@ export default {
     }
   },
   methods: {
+    //处理emoji路径
+    emojiPath(url) {
+      return require(`../../../assets/svg/emoji-${url}.png`);
+    },
     //分割label为数组
     labelToArray(a) {
       let arr = a.split(",");
@@ -137,7 +156,6 @@ export default {
         type: "delete",
         id: id
       };
-
       moments(obj)
         .then(res => {
           if (res.data.code === 200) {
@@ -151,6 +169,20 @@ export default {
         .catch(err => {
           console.log(err);
         });
+    },
+    showEmoji(a) {
+      this.Emoji = !this.Emoji;
+      console.log(this.Emoji, a);
+    },
+    chooseEmoji(chooseEmoji) {
+      this.mootForm.content += chooseEmoji;
+      this.Emoji = false;
+    },
+    readMore(id) {
+      localStorage.setItem("readMore", id);
+      this.$router.push({
+        path: "/article"
+      });
     }
   }
 };
@@ -161,11 +193,34 @@ export default {
   padding: 0 50px;
   box-sizing: border-box;
 
+  /deep/.el-textarea__inner {
+    border: none !important;
+  }
+  /deep/.el-textarea__inner:hover {
+    border: 1px solid #dcdfe6;
+  }
   .moodContent {
     width: 100%;
   }
   .publish {
-    padding: 20px 5px;
+    border: 1px solid #dcdfe6;
+    padding: 20px 5px 5px;
+    position: relative;
+    .EmojiBox {
+      position: absolute;
+      bottom: 20%;
+      left: 0;
+      width: 39%;
+      height: 30%;
+      /*  background: url("../../../assets/svg/emojis.png"); */
+      .emoji {
+        width: 32px;
+        height: 32px;
+      }
+    }
+  }
+  .moodBoxBottom {
+    display: flex;
   }
 }
 .el-carousel__item h3 {
@@ -239,15 +294,15 @@ ul {
         margin-right: 20px;
       }
       .articleAuthor {
-        color: #ff5722;
+        color: #8d6e63;
       }
     }
   }
   li:nth-of-type(odd) {
-    background: rgba(181, 211, 211, 0.52);
+    background: rgba(181, 211, 211, 0.116);
   }
   li:nth-of-type(even) {
-    background: rgba(166, 179, 179, 0.52);
+    background: rgba(166, 179, 179, 0.143);
   }
 }
 </style>

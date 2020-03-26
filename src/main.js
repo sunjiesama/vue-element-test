@@ -9,7 +9,6 @@ import "nprogress/nprogress.css"; // progress bar style
 import "./mock/index";
 import "element-ui/lib/theme-chalk/index.css";
 import "../public/style/public.css";
-
 Vue.config.productionTip = false;
 router.beforeEach((to, from, next) => {
   NProgress.start();
@@ -29,6 +28,7 @@ router.beforeEach((to, from, next) => {
     }
   }
 });
+
 Vue.use(elementUI);
 new Vue({
   router,
