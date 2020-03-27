@@ -21,7 +21,7 @@
               @click="chooseEmoji(emoji.meaning)"
             />
           </div>
-          <img src="@/assets/svg/emoji-1.png" alt @click="showEmoji('aaa')" />
+          <img src="@/assets/svg/emoji-1.png" alt @click="showEmoji" />
         </div>
       </div>
     </div>
@@ -170,9 +170,8 @@ export default {
           console.log(err);
         });
     },
-    showEmoji(a) {
+    showEmoji() {
       this.Emoji = !this.Emoji;
-      console.log(this.Emoji, a);
     },
     chooseEmoji(chooseEmoji) {
       this.mootForm.content += chooseEmoji;

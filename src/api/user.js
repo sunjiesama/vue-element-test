@@ -5,11 +5,10 @@ axios.interceptors.response.use(function(config) {
   //如果数据没有请求到，并且返回到结果为校监失败
   if (config.data.code !== 200) {
     //token失效，移除token
-    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    document.cookie = "Token=; expires=Thu, 01 Jan 1970 00:00:00 GMT";
   }
   return config;
 });
-
 //用户登录
 export const userLogin = data =>
   axios({

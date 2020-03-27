@@ -11,132 +11,156 @@ export default new Router({
       name: "index",
       component: Index,
       redirect: "/home/index",
+      meta: {
+        isHidden: true
+      },
       children: [
         {
           path: "index",
           component: () => import("@/views/home/Home")
         }
-      ],
-      isHidden: true
+      ]
     },
     {
       path: "/login",
       name: "login",
       component: () => import("@/views/login"),
-      isHidden: true
+      meta: {
+        isHidden: true
+      }
     },
     {
       path: "/home",
       name: "home",
       component: Index,
       redirect: "/home/index",
-      title: "首页",
-      icon: "el-icon-menu",
+      meta: {
+        title: "首页",
+        icon: "el-icon-menu",
+        isHidden: false,
+        serialNumber: 1
+      },
       children: [
         {
           path: "index",
           component: () => import("@/views/home/Home")
         }
-      ],
-      isHidden: false,
-      serialNumber: 1
+      ]
     },
     {
       path: "/time",
       name: "time",
       component: Index,
       redirect: "time/index",
-      title: "时间",
-      icon: "el-icon-date",
+      meta: {
+        title: "时间",
+        icon: "el-icon-date",
+        isHidden: false,
+        serialNumber: 2
+      },
       children: [
         {
           path: "index",
           component: () => import("@/views/home/Time")
         }
-      ],
-      isHidden: false,
-      serialNumber: 2
+      ]
     },
     {
       path: "/article",
       name: "article",
       component: Index,
       redirect: "article/index",
-      title: "文章",
-      icon: "el-icon-reading",
+      meta: {
+        title: "文章",
+        icon: "el-icon-reading",
+        isHidden: false,
+        serialNumber: 3
+      },
       children: [
         {
           path: "index",
           component: () => import("@/views/home/Article")
         }
-      ],
-      isHidden: false,
-      serialNumber: 3
+      ]
     },
     {
       path: "/excel",
       name: "excel",
       component: Index,
       redirect: "excel/index",
-      title: "excel",
-      icon: "el-icon-s-data",
+      meta: {
+        title: "excel",
+        icon: "el-icon-s-data",
+        isHidden: false,
+        serialNumber: 4
+      },
       children: [
         {
           path: "index",
           component: () => import("@/views/home/Excel")
         }
-      ],
-      isHidden: false,
-      serialNumber: 4
+      ]
     },
     {
       path: "/canvas",
       name: "canvas",
       component: Index,
       redirect: "canvas/index",
-      title: "canvas",
-      icon: "el-icon-news",
+      meta: {
+        title: "canvas",
+        icon: "el-icon-news",
+        isHidden: false,
+        serialNumber: 5
+      },
       children: [
         {
           path: "index",
           component: () => import("@/views/home/Canvas")
         }
-      ],
-      isHidden: false,
-      serialNumber: 5
+      ]
     },
     {
       path: "/icons",
       name: "icons",
       component: Index,
       redirect: "icons/index",
-      title: "icons",
-      icon: "el-icon-umbrella",
+      meta: {
+        title: "icons",
+        icon: "el-icon-umbrella",
+        isHidden: false,
+        serialNumber: 6
+      },
       children: [
         {
           path: "index",
           component: () => import("@/views/home/Icons")
         }
-      ],
-      isHidden: false,
-      serialNumber: 5
+      ]
     },
     {
       path: "/table",
       name: "table",
       component: Index,
       redirect: "table/index",
-      title: "table",
-      icon: "el-icon-wind-power",
+      meta: {
+        title: "table",
+        icon: "el-icon-wind-power",
+        serialNumber: 7,
+        isHidden: false
+      },
       children: [
         {
           path: "index",
           component: () => import("@/views/home/Table")
         }
-      ],
-      isHidden: false,
-      serialNumber: 5
+      ]
     },
-    { path: "*", component: () => import("@/views/404") }
+    {
+      path: "*",
+      meta: {
+        isHidden: true
+      },
+      component: () => import("@/views/404")
+    }
   ]
 });

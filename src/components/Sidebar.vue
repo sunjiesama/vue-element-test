@@ -9,9 +9,10 @@
     @select="toPath"
   >
     <el-menu-item v-for="(item, index) in nav" :key="index" :index="item.path">
-      <i :class="item.icon"></i>
-      <span slot="title">{{ item.title }}</span>
+      <i :class="item.meta.icon"></i>
+      <span slot="title">{{ item.meta.title }}</span>
     </el-menu-item>
+
     <li class="slidebaricon">
       <i
         v-if="isCollapse"
@@ -49,18 +50,26 @@
 export default {
   data() {
     return {
-      isCollapse: true
+      isCollapse: true,
+      defaultActive: ""
     };
+  },
+  created() {
+    this.defaultActive = this.$route.path.replace("/index", "");
+    console.log(this.defaultActive);
+  },
+  watch: {
+    $route() {
+      this.defaultActive = this.$route.path.replace("/index", "");
+      /* console.log(newVal.redirectedFrom); */
+    }
   },
   computed: {
     nav() {
       let routes = this.$router.options.routes;
       return routes.filter(function(item) {
-        return item.isHidden !== true;
+        return item.meta.isHidden !== true;
       });
-    },
-    defaultActive() {
-      return localStorage.getItem("defaultPath");
     }
   },
   methods: {

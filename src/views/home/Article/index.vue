@@ -1,5 +1,5 @@
 <template>
-  <transition name="el-fade-in-linear">
+  <transition name="el-fade-in">
     <div class="box" v-if="show">
       {{ content }}
     </div>
