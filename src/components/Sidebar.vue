@@ -50,21 +50,13 @@
 export default {
   data() {
     return {
-      isCollapse: true,
-      defaultActive: ""
+      isCollapse: true
     };
   },
-  created() {
-    this.defaultActive = this.$route.path.replace("/index", "");
-    console.log(this.defaultActive);
-  },
-  watch: {
-    $route() {
-      this.defaultActive = this.$route.path.replace("/index", "");
-      /* console.log(newVal.redirectedFrom); */
-    }
-  },
   computed: {
+    defaultActive() {
+      return this.$route.path.replace("/index", "");
+    },
     nav() {
       let routes = this.$router.options.routes;
       return routes.filter(function(item) {

@@ -1,8 +1,6 @@
 <template>
   <transition name="el-fade-in">
-    <div class="box" v-if="show">
-      {{ content }}
-    </div>
+    <div class="box" v-if="show">{{ content }}</div>
   </transition>
 </template>
 <script>
@@ -21,9 +19,6 @@ export default {
     }, 500);
   },
   methods: {
-    requestfullText() {
-      console.log("请求全文");
-    },
     getId() {
       let id = localStorage.getItem("readMore");
       moments({
@@ -42,10 +37,10 @@ export default {
 </script>
 <style lang="less" scoped>
 .box {
+  white-space: pre-wrap;
   box-sizing: border-box;
   width: 60%;
   height: 100%;
-  background: rgb(180, 200, 202);
   padding: 20px 100px;
   left: 0px;
   top: 0px;

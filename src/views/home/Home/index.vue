@@ -22,6 +22,34 @@
             />
           </div>
           <img src="@/assets/svg/emoji-1.png" alt @click="showEmoji" />
+          <div>
+            <el-tag
+              :key="tag"
+              v-for="tag in mootForm.dynamicTags"
+              closable
+              :disable-transitions="false"
+              @close="handleClose(tag)"
+            >
+              {{ tag }}
+            </el-tag>
+            <el-input
+              class="input-new-tag"
+              v-if="inputVisible"
+              v-model="inputValue"
+              ref="saveTagInput"
+              size="small"
+              @keyup.enter.native="handleInputConfirm"
+              @blur="handleInputConfirm"
+            >
+            </el-input>
+            <el-button
+              v-else
+              class="button-new-tag"
+              size="small"
+              @click="showInput"
+              >添加标签</el-button
+            >
+          </div>
         </div>
       </div>
     </div>
@@ -54,11 +82,11 @@
           </div>
           <div class="body">
             <div class="articleContent">
-              {{ i.content
-              }}<el-link :underline="false" @click="readMore(i.id)"
-                >查看全文</el-link
-              >
+              {{ aposEscapeCharacter(i.content) }}
             </div>
+            <el-link :underline="false" @click="readMore(i.id)" class="readMore"
+              >查看全文</el-link
+            >
           </div>
           <div class="foot">
             <span class="articleAuthor">作者：{{ i.author }}</span>
@@ -71,8 +99,10 @@
           </div>
         </li>
       </ul>
-      <p v-if="loading">加载中...</p>
-      <p v-if="noMore">没有更多了</p>
+      <div class="loadingAndnoMore">
+        <p v-if="loading" class="loading">加载中...</p>
+        <p v-if="noMore" class="noMore">没有更多了</p>
+      </div>
     </div>
   </div>
 </template>
@@ -81,24 +111,28 @@
 import { moments } from "@/api/user";
 import { emojiList } from "@/assets/svg/index.js";
 export default {
+  inject: ["reload"],
   data() {
     return {
+      inputVisible: false,
+      inputValue: "",
       emojiList,
       Emoji: false,
       textarea: "",
-      count: 0,
+      total: 0,
       loading: false,
       list: [],
       form: {
         type: "search",
-        pageSize: 10,
+        pageSize: 5,
         pageNum: 1
       },
       mootForm: {
         type: "insert",
         nickName: "alice",
         content: "",
-        motto: ""
+        motto: "",
+        dynamicTags: []
       }
     };
   },
@@ -107,37 +141,100 @@ export default {
   },
   computed: {
     noMore() {
-      return this.form.pageNum >= 2;
+      return this.form.pageNum >= Math.floor(this.total / this.form.pageSize);
     },
     disabled() {
       return this.loading || this.noMore;
     }
   },
   methods: {
+    //关闭标签
+    handleClose(tag) {
+      this.mootForm.dynamicTags.splice(
+        this.mootForm.dynamicTags.indexOf(tag),
+        1
+      );
+    },
+    //展示标签
+    showInput() {
+      this.inputVisible = true;
+      // eslint-disable-next-line no-unused-vars
+      this.$nextTick(_ => {
+        this.$refs.saveTagInput.$refs.input.focus();
+      });
+    },
+    //添加标签
+    handleInputConfirm() {
+      let inputValue = this.inputValue;
+      if (inputValue) {
+        this.mootForm.dynamicTags.push(inputValue);
+      }
+      this.inputVisible = false;
+      this.inputValue = "";
+    },
+    //单引号转义
+    aposEscapeCharacter(str) {
+      if (str) {
+        let reg = new RegExp("&apos", "gi");
+        return (str = str.replace(reg, "'"));
+      }
+    },
     //处理emoji路径
     emojiPath(url) {
       return require(`../../../assets/svg/emoji-${url}.png`);
     },
     //分割label为数组
     labelToArray(a) {
-      let arr = a.split(",");
-      return arr;
+      if (a) {
+        let arr = a.split(",");
+        return arr;
+      }
     },
     addmood() {
-      moments(this.mootForm)
-        .then(() => {
-          this.list = [];
-          this.form.pageNum = 1;
-          this.getlist();
-        })
-        .catch(err => {
-          console.log(err);
+      if (this.mootForm.content) {
+        if (this.mootForm.content.length <= 10) {
+          this.$message({
+            message: "内容太少了,在多说两句吧",
+            type: "warning"
+          });
+        } else {
+          let reg = new RegExp("'", "gi");
+          this.mootForm.content = this.mootForm.content.replace(reg, "&apos");
+          moments(this.mootForm)
+            .then(res => {
+              if (res.data.code === 200) {
+                this.mootForm.content = "";
+                this.$message({
+                  message: res.data.msg,
+                  type: "success"
+                });
+                this.reload();
+              } else {
+                this.$message({
+                  message: res.data.msg,
+                  type: "warning"
+                });
+              }
+            })
+            .catch(err => {
+              this.$message({
+                message: err.data.msg,
+                type: "warning"
+              });
+            });
+        }
+      } else {
+        this.$message({
+          message: "不能发布空的内容",
+          type: "warning"
         });
+      }
     },
     getlist() {
       moments(this.form)
         .then(res => {
           if (res.data.code === 200) {
+            this.total = res.data.total["count(*)"];
             this.list = this.list.concat(res.data.data);
           }
         })
@@ -220,6 +317,21 @@ export default {
   }
   .moodBoxBottom {
     display: flex;
+    .el-tag + .el-tag {
+      margin-left: 10px;
+    }
+    .button-new-tag {
+      margin-left: 10px;
+      height: 32px;
+      line-height: 30px;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+    .input-new-tag {
+      width: 90px;
+      margin-left: 10px;
+      vertical-align: bottom;
+    }
   }
 }
 .el-carousel__item h3 {
@@ -242,7 +354,7 @@ ul {
   li {
     box-sizing: border-box;
     padding: 30px 50px;
-    height: 300px;
+    height: 250px;
     list-style-type: none;
     display: flex;
     flex-direction: column;
@@ -279,11 +391,22 @@ ul {
 
       .articleContent {
         padding: 5px 10px;
-        height: 100%;
+        width: 100%;
+        height: 60%;
         text-indent: 2rem;
+        overflow: hidden;
         color: #424242;
-        font-size: 14px;
+        font-size: 12px;
         line-height: 40px;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+      }
+      .readMore {
+        padding-right: 20px;
+        display: block;
+        height: 40px;
+        text-align: right;
       }
     }
     .foot {
@@ -303,5 +426,13 @@ ul {
   li:nth-of-type(even) {
     background: rgba(166, 179, 179, 0.143);
   }
+}
+</style>
+<style>
+.loadingAndnoMore p {
+  height: 40px;
+  font: bold 20px/40px "";
+  text-align: center;
+  color: rgb(114, 114, 114);
 }
 </style>

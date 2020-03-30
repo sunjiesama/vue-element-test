@@ -6,7 +6,6 @@ import elementUI from "element-ui";
 import i18n from "./i18n/index";
 import NProgress from "nprogress"; // progress bar
 import "nprogress/nprogress.css"; // progress bar style
-import "./mock/index";
 import "element-ui/lib/theme-chalk/index.css";
 import "../public/style/public.css";
 Vue.config.productionTip = false;
