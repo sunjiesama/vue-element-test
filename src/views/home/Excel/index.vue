@@ -9,9 +9,9 @@
         <el-link :underline="false" type="primary">$store.state.count</el-link
         >取出的store的值:
       </span>
-      <el-link :underline="false" type="success">
-        {{ $store.state.count }}
-      </el-link>
+      <el-link :underline="false" type="success">{{
+        $store.state.count
+      }}</el-link>
       <br />
       <!-- 第二种 -->
       <span>
@@ -39,9 +39,9 @@
           >$store.getters.increase</el-link
         >取出的store的值:
       </span>
-      <el-link :underline="false" type="success">
-        {{ $store.getters.increase }}
-      </el-link>
+      <el-link :underline="false" type="success">{{
+        $store.getters.increase
+      }}</el-link>
       <br />
       <span>
         通过
@@ -70,14 +70,25 @@
         >mapAction提交action(-5)</el-button
       >
     </div>
-    <el-button type="primary" @click="getinfos">主要按钮</el-button>
+    <div class>
+      <el-button type="primary" @click="getinfos" size="mini"
+        >主要按钮</el-button
+      >
+      <el-button v-waves type="primary" size="mini" @click="add"
+        >水波纹效果</el-button
+      >
+    </div>
   </div>
 </template>
 
 <script>
 import { getInfo } from "@/api/index";
 import { mapState, mapGetters, mapActions } from "vuex";
+import waves from "@/directive/waves/index.js"; // 水波纹指令
 export default {
+  directives: {
+    waves
+  },
   data() {
     return {};
   },
