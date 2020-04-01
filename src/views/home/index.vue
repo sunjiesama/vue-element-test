@@ -4,7 +4,9 @@
     <el-container>
       <el-header height="40px"><Header></Header></el-header>
       <el-main>
-        <router-view></router-view>
+        <transition name="slide-fade" mode="out-in">
+          <router-view />
+        </transition>
       </el-main>
       <el-footer height="40px"><Footer></Footer></el-footer>
     </el-container>
@@ -37,5 +39,16 @@ export default {
 }
 .el-aside {
   background-color: #d3dce6;
+}
+.slide-fade-enter-active {
+  transition: all 0.3s ease;
+}
+.slide-fade-leave-active {
+  transition: all 0.5s cubic-bezier(1, 0.5, 0.8, 1);
+}
+.slide-fade-enter,
+.slide-fade-leave-to {
+  transform: translateX(10px);
+  opacity: 0;
 }
 </style>

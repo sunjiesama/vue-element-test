@@ -4,9 +4,3 @@
     <router-link to="/">点击返回主页</router-link>
   </div>
 </template>
-
-<script>
-export default {};
-</script>
-
-<style></style>

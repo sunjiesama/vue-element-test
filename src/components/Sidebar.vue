@@ -59,6 +59,7 @@ export default {
     },
     nav() {
       let routes = this.$router.options.routes;
+      console.log(routes);
       return routes.filter(function(item) {
         return item.meta.isHidden !== true;
       });
